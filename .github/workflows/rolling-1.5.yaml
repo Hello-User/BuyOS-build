@@ -120,16 +120,18 @@ jobs:
           key: ${{ github.workflow }}-v${{ steps.clone-vyos.outputs.vyos_kernel_version }}
   
       - name: Fetch kernel sources
-        working-directory: vyos-build/packages       # Correct: cd into the parent directory
+        working-directory: vyos-build/packages
         if: steps.cache-kernel-restore.outputs.cache-hit != 'true'
         run: git clone -b v${{ steps.clone-vyos.outputs.vyos_kernel_version }} --depth 1 --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git linux
-  
+
       - name: Fetch linux-firmware sources
-        working-directory: vyos-build/packages/linux-kernel
+        working-directory: vyos-build
         if: steps.cache-kernel-restore.outputs.cache-hit != 'true'
         run: |
+          # Reads Jenkinsfile from the current directory (vyos-build)
           firmware_tag=$(sed -n "/'name': 'linux-firmware'/ s/.*'scmCommit': '\([0-9]\{8\}\)'.*/\1/p" Jenkinsfile)
-          git clone -b $firmware_tag --depth 1 --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
+          # Clones into 'packages/linux-firmware' relative to the current directory (vyos-build)
+          git clone -b $firmware_tag --depth 1 --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git packages/linux-firmware
   
       - name: Generate kernel config
         id: generate-kernel-config
