@@ -120,9 +120,9 @@ jobs:
           key: ${{ github.workflow }}-v${{ steps.clone-vyos.outputs.vyos_kernel_version }}
   
       - name: Fetch kernel sources
-        working-directory: vyos-build/packages/linux
+        working-directory: vyos-build/packages       # Correct: cd into the parent directory
         if: steps.cache-kernel-restore.outputs.cache-hit != 'true'
-        run: git clone -b v${{ steps.clone-vyos.outputs.vyos_kernel_version }} --depth 1 --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+        run: git clone -b v${{ steps.clone-vyos.outputs.vyos_kernel_version }} --depth 1 --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git linux
   
       - name: Fetch linux-firmware sources
         working-directory: vyos-build/packages/linux-kernel
