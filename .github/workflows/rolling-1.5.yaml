@@ -120,7 +120,7 @@ jobs:
           key: ${{ github.workflow }}-v${{ steps.clone-vyos.outputs.vyos_kernel_version }}
   
       - name: Fetch kernel sources
-        working-directory: vyos-build/packages/linux-kernel
+        working-directory: vyos-build/packages/linux
         if: steps.cache-kernel-restore.outputs.cache-hit != 'true'
         run: git clone -b v${{ steps.clone-vyos.outputs.vyos_kernel_version }} --depth 1 --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
   
@@ -163,7 +163,7 @@ jobs:
           fi
   
       - name: Compile kernel
-        working-directory: vyos-build/packages/linux-kernel
+        working-directory: vyos-build/packages/linux
         if: steps.generate-kernel-config.outputs.kconfig-changed == 'true'
         run: |
           sudo ./build-kernel.sh
